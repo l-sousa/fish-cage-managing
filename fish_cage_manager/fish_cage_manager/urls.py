@@ -13,14 +13,17 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from backend import views
 from django.contrib import admin
 from django.urls import path
 
+from backend import views
+
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.all_cages),
-    path('cage/<int:id>', views.individual_cage),
-    path('stats/', views.statistics),
+    path('', views.all_cages, name="all_cages"),
+    path('cage/<int:cage_id>', views.individual_cage, name="individual_cage"),
+    path('stats/', views.statistics, name="stats"),
+    path('new_cage/', views.new_cage, name="new_cage"),
+    path('delete_cage/<int:cage_id>', views.delete_cage, name="delete_cage"),
 
 ]

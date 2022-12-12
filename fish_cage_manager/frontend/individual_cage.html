@@ -1,22 +1,94 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+{# Load the tag library #}
+{% load bootstrap4 %}
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+{# Load CSS and JavaScript #}
+{% bootstrap_css %}
+{% bootstrap_javascript jquery='full' %}
 
-    <title>Jaula Individual</title>
-  </head>
-  <body>
-    <h1>Jaula Individual</h1> 
+{# Display django.contrib.messages as Bootstrap alerts #}
+{% bootstrap_messages %}
 
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-  </body>
-</html>
+{# Display a form #}
+<div class="jumbotron">
+    <h1 class="display-4">Jaula nº {{ cage.cage_id }}</h1>
+</div>
+
+<div class="container">
+    <div class="row">
+
+    </div>
+</div>
+<div class="p-5">
+
+<table class="table table-hover">
+    <thead>
+    <tr>
+        <th scope="col">Ano</th>
+        <th scope="col">Mês</th>
+        <th scope="col">Nº Peixes</th>
+        <th scope="col">PM</th>
+        <th scope="col">Biom.</th>
+        <th scope="col">% Alim</th>
+        <th scope="col">Kg</th>
+        <th scope="col">Sacos</th>
+        <th scope="col">Tot. 30 Dias</th>
+        <th scope="col">FC</th>
+        <th scope="col">Aum. Biom.</th>
+        <th scope="col">Biom. Total</th>
+        <th scope="col">PM</th>
+        <th scope="col">PM Teórico C/ Alim. Real</th>
+        <th scope="col">Alim. Real</th>
+        <th scope="col">PM Teórico C/ Alim. Real</th>
+        <th scope="col">PM Real</th>
+        <th scope="col">Biom. Real</th>
+        <th scope="col">%</th>
+        <th scope="col">Nº</th>
+        <th scope="col">%</th>
+        <th scope="col">Nº</th>
+        <th scope="col">Para</th>
+        <th scope="col">De</th>
+        <th scope="col">Aum. Biom.</th>
+        <th scope="col">FC Real</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for month in cage.monthstat_set.all %}
+        <tr>
+            <td scope="row">{{ month.year }}</td>
+            <th>{{ month.month_name }}</th>
+            <td>{{ month.num_fishes }}</td>
+            <td>{{ month.medium_weight }}</td>
+            <td>{{ month.biomass }}</td>
+            <td>{{ month.percent_feeding }}</td>
+            <td>{{ month.food_portion.kg }}</td>
+            <td>{{ month.food_portion.bags }}</td>
+            <td>{{ month.food_portion.total_30_days }}</td>
+            <td>{{ month.fc }}</td>
+            <td>{{ month.theoric_30_days.biomass_increase }}</td>
+            <td>{{ month.theoric_30_days.biomass_total }}</td>
+            <td>{{ month.theoric_30_days.medium_weight }}</td>
+            <td>{{ month.theoric_medium_weight_with_real_feeding }}</td>
+            <td>{{ month.real_30_days.feeding }}</td>
+            <td>{{ month.real_30_days.medium_weight_with_real_feeding }}</td>
+            <td>{{ month.real_30_days.medium_weight }}</td>
+            <td>{{ month.real_30_days.biomass }}</td>
+            <td>{{ month.mortality.theoric_percentage }}</td>
+            <td>{{ month.mortality.theoric_number }}</td>
+            <td>{{ month.mortality.real_percentage }}</td>
+            <td>{{ month.mortality.real_number }}</td>
+            <td>{{ month.calibration.goes_to }}</td>
+            <td>{{ month.calibration.came_from }}</td>
+            <td>{{ month.biomass_increase_with_mortality }}</td>
+            <td>{{ month.real_fc_with_mortality }}</td>
+
+
+        </tr>
+    {% endfor %}
+
+    </tbody>
+</table>
+</div>
+
+<script>
+
+</script>
