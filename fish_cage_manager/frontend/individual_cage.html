@@ -100,25 +100,25 @@
 
     $('#id_theoric_30_days_medium_weight').change(function () {
         if ($('#id_fc').val() && $('#id_biomass').val() && $('#id_num_fishes').val()) {
-            $('#id_theoric_medium_weight_with_real_feeding').val(((Number($('#id_theoric_30_days_medium_weight').val() / Number($('#id_fc').val())) + Number($('#id_biomass').val())) / Number($('#id_num_fishes').val()));
+            $('#id_theoric_medium_weight_with_real_feeding').val(((Number($('#id_theoric_30_days_medium_weight').val() / Number($('#id_fc').val())) + Number($('#id_biomass').val())) / Number($('#id_num_fishes').val())));
             $("#id_theoric_medium_weight_with_real_feeding").trigger("change");
         }
     });
     $('#id_fc').change(function () {
         if ($('#id_theoric_30_days_medium_weight').val() && $('#id_biomass').val() && $('#id_num_fishes').val()) {
-            $('#id_theoric_medium_weight_with_real_feeding').val(((Number($('#id_theoric_30_days_medium_weight').val() / Number($('#id_fc').val())) + Number($('#id_biomass').val())) / Number($('#id_num_fishes').val()));
+            $('#id_theoric_medium_weight_with_real_feeding').val(((Number($('#id_theoric_30_days_medium_weight').val() / Number($('#id_fc').val())) + Number($('#id_biomass').val())) / Number($('#id_num_fishes').val())));
             $("#id_theoric_medium_weight_with_real_feeding").trigger("change");
         }
     });
     $('#id_biomass').change(function () {
         if ($('#id_fc').val() && $('#id_theoric_30_days_medium_weight').val() && $('#id_num_fishes').val()) {
-            $('#id_theoric_medium_weight_with_real_feeding').val(((Number($('#id_theoric_30_days_medium_weight').val() / Number($('#id_fc').val())) + Number($('#id_biomass').val())) / Number($('#id_num_fishes').val()));
+            $('#id_theoric_medium_weight_with_real_feeding').val(((Number($('#id_theoric_30_days_medium_weight').val() / Number($('#id_fc').val())) + Number($('#id_biomass').val())) / Number($('#id_num_fishes').val())));
             $("#id_theoric_medium_weight_with_real_feeding").trigger("change");
         }
     });
     $('#id_num_fishes').change(function () {
         if ($('#id_fc').val() && $('#id_biomass').val() && $('#id_theoric_30_days_medium_weight').val()) {
-            $('#id_theoric_medium_weight_with_real_feeding').val(((Number($('#id_theoric_30_days_medium_weight').val() / Number($('#id_fc').val())) + Number($('#id_biomass').val())) / Number($('#id_num_fishes').val()));
+            $('#id_theoric_medium_weight_with_real_feeding').val(((Number($('#id_theoric_30_days_medium_weight').val() / Number($('#id_fc').val())) + Number($('#id_biomass').val())) / Number($('#id_num_fishes').val())));
             $("#id_theoric_medium_weight_with_real_feeding").trigger("change");
         }
     });
@@ -214,31 +214,97 @@
 
     ////////////////////////////////////////////////////////
 
-    ///////////// CALCULO DE PM
+    ///////////// CALCULO DE PM REAL
     $('#id_real_30_days_feeding').change(function () {
         if ($('#id_fc').val() && $('#id_biomass').val() && $('#id_num_fishes').val()) {
-            $('#id_real_30_days_medium_weight_with_real_feeding').val(((Number($('#id_real_30_days_feeding').val() / Number($('#id_fc').val())) + Number($('#id_biomass').val())) / Number($('#id_num_fishes').val()));
+            $('#id_real_30_days_medium_weight_with_real_feeding').val(((Number($('#id_real_30_days_feeding').val() / Number($('#id_fc').val())) + Number($('#id_biomass').val())) / Number($('#id_num_fishes').val())));
             $("#id_real_30_days_medium_weight_with_real_feeding").trigger("change");
         }
     });
     $('#id_fc').change(function () {
         if ($('#id_real_30_days_feeding').val() && $('#id_biomass').val() && $('#id_num_fishes').val()) {
-            $('#id_real_30_days_medium_weight_with_real_feeding').val(((Number($('#id_real_30_days_feeding').val() / Number($('#id_fc').val())) + Number($('#id_biomass').val())) / Number($('#id_num_fishes').val()));
+            $('#id_real_30_days_medium_weight_with_real_feeding').val(((Number($('#id_real_30_days_feeding').val() / Number($('#id_fc').val())) + Number($('#id_biomass').val())) / Number($('#id_num_fishes').val())));
             $("#id_real_30_days_medium_weight_with_real_feeding").trigger("change");
         }
     });
     $('#id_biomass').change(function () {
         if ($('#id_fc').val() && $('#id_real_30_days_feeding').val() && $('#id_num_fishes').val()) {
-            $('#id_real_30_days_medium_weight_with_real_feeding').val(((Number($('#id_real_30_days_feeding').val() / Number($('#id_fc').val())) + Number($('#id_biomass').val())) / Number($('#id_num_fishes').val()));
+            $('#id_real_30_days_medium_weight_with_real_feeding').val(((Number($('#id_real_30_days_feeding').val() / Number($('#id_fc').val())) + Number($('#id_biomass').val())) / Number($('#id_num_fishes').val())));
             $("#id_real_30_days_medium_weight_with_real_feeding").trigger("change");
         }
     });
     $('#id_num_fishes').change(function () {
         if ($('#id_fc').val() && $('#id_biomass').val() && $('#id_real_30_days_feeding').val()) {
-            $('#id_real_30_days_medium_weight_with_real_feeding').val(((Number($('#id_real_30_days_feeding').val() / Number($('#id_fc').val())) + Number($('#id_biomass').val())) / Number($('#id_num_fishes').val()));
+            $('#id_real_30_days_medium_weight_with_real_feeding').val(((Number($('#id_real_30_days_feeding').val() / Number($('#id_fc').val())) + Number($('#id_biomass').val())) / Number($('#id_num_fishes').val())));
             $("#id_real_30_days_medium_weight_with_real_feeding").trigger("change");
         }
     });
 
 
+    ////////////////////////////////////////////////////////
+
+    ///////////// CALCULO DE biomassa REAL
+
+    $('#id_real_30_days_real_medium_weight').change(function () {
+        if ($('#id_num_fishes').val() && $('#id_mortality_theoric_number').val() ) {
+            $('#id_real_30_days_biomass').val(Number($('#id_real_30_days_real_medium_weight').val()) * (Number($('#id_num_fishes').val())  -  Number($('#id_mortality_theoric_number').val())));
+            $("#id_real_30_days_biomass").trigger("change");
+        }
+    });
+
+    $('#id_num_fishes').change(function () {
+        if ($('#id_real_30_days_real_medium_weight').val() && $('#id_mortality_theoric_number').val() ) {
+            $('#id_real_30_days_biomass').val(Number($('#id_real_30_days_real_medium_weight').val()) * (Number($('#id_num_fishes').val())  -  Number($('#id_mortality_theoric_number').val())));
+            $("#id_real_30_days_biomass").trigger("change");
+        }
+
+    });
+
+    $('#id_mortality_theoric_number').change(function () {
+        if ($('#id_num_fishes').val() && $('#id_real_30_days_real_medium_weight').val() ) {
+            $('#id_real_30_days_biomass').val(Number($('#id_real_30_days_real_medium_weight').val()) * (Number($('#id_num_fishes').val())  -  Number($('#id_mortality_theoric_number').val())));
+            $("#id_real_30_days_biomass").trigger("change");
+        }
+    });
+
+    ////////////////////////////////////////////////////////
+
+    ///////////// CALCULO DE biomassa REAL
+
+
+    $('#id_mortality_theoric_percentage').change(function () {
+        if ($('#id_num_fishes').val()) {
+            $('#id_mortality_theoric_number').val(Number($('#id_num_fishes').val() * Number($('#id_mortality_theoric_percentage').val())));
+            $("#id_mortality_theoric_number").trigger("change");
+        }
+    });
+
+    $('#id_num_fishes').change(function () {
+        if ($('#id_mortality_theoric_percentage').val()) {
+            $('#id_mortality_theoric_number').val(Number($('#id_num_fishes').val() * Number($('#id_mortality_theoric_percentage').val())));
+            $("#id_mortality_theoric_number").trigger("change");
+        }
+    });
+
+
+    ////////////////////////////////////////////////////////
+
+    ///////////// CALCULO DE MORTALITY REAL PERCENTAGE
+
+    $('#id_num_fishes').change(function () {
+        if ($('#id_mortality_real_number').val()) {
+            $('#id_mortality_real_percentage').val(Number($('#id_mortality_real_number').val() / Number($('#id_num_fishes').val()) * 100  ));
+            $("#id_mortality_real_percentage").trigger("change");
+        }
+    });
+
+    $('#id_mortality_real_number').change(function () {
+        if ($('#id_num_fishes').val()) {
+            $('#id_mortality_real_percentage').val(Number($('#id_mortality_real_number').val() / Number($('#id_num_fishes').val()) * 100  ));
+            $("#id_mortality_real_percentage").trigger("change");
+        }
+    });
+
+
+    
 </script>
