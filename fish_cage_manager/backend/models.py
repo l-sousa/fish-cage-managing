@@ -10,6 +10,7 @@ class Cage(models.Model):
 class MonthStat(models.Model):
     cage = models.ForeignKey(Cage, on_delete=models.CASCADE)
     month_name = models.CharField(max_length=20)
+    temperature = models.FloatField()
     year = models.IntegerField()
     num_fishes = models.IntegerField()
     theoric_medium_weight_with_real_feeding = models.FloatField()
@@ -17,8 +18,8 @@ class MonthStat(models.Model):
     biomass = models.FloatField()
     percent_feeding = models.FloatField()
     fc = models.FloatField()
-    biomass_increase_with_mortality = models.IntegerField(default=None)
-    real_fc_with_mortality = models.FloatField()
+    biomass_increase_with_mortality = models.IntegerField(default=0)
+    real_fc_with_mortality = models.FloatField(default=0)
 
     #food_portion
     food_portion_kg = models.FloatField()
