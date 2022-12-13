@@ -20,75 +20,225 @@
 </div>
 <div class="p-5">
 
-<table class="table table-hover">
-    <thead>
-    <tr>
-        <th scope="col">Ano</th>
-        <th scope="col">Mês</th>
-        <th scope="col">Nº Peixes</th>
-        <th scope="col">PM</th>
-        <th scope="col">Biom.</th>
-        <th scope="col">% Alim</th>
-        <th scope="col">Kg</th>
-        <th scope="col">Sacos</th>
-        <th scope="col">Tot. 30 Dias</th>
-        <th scope="col">FC</th>
-        <th scope="col">Aum. Biom.</th>
-        <th scope="col">Biom. Total</th>
-        <th scope="col">PM</th>
-        <th scope="col">PM Teórico C/ Alim. Real</th>
-        <th scope="col">Alim. Real</th>
-        <th scope="col">PM Teórico C/ Alim. Real</th>
-        <th scope="col">PM Real</th>
-        <th scope="col">Biom. Real</th>
-        <th scope="col">%</th>
-        <th scope="col">Nº</th>
-        <th scope="col">%</th>
-        <th scope="col">Nº</th>
-        <th scope="col">Para</th>
-        <th scope="col">De</th>
-        <th scope="col">Aum. Biom.</th>
-        <th scope="col">FC Real</th>
-    </tr>
-    </thead>
-    <tbody>
-    {% for month in cage.monthstat_set.all %}
+    <table class="table table-hover">
+        <thead>
         <tr>
-            <td scope="row">{{ month.year }}</td>
-            <th>{{ month.month_name }}</th>
-            <td>{{ month.num_fishes }}</td>
-            <td>{{ month.medium_weight }}</td>
-            <td>{{ month.biomass }}</td>
-            <td>{{ month.percent_feeding }}</td>
-            <td>{{ month.food_portion.kg }}</td>
-            <td>{{ month.food_portion.bags }}</td>
-            <td>{{ month.food_portion.total_30_days }}</td>
-            <td>{{ month.fc }}</td>
-            <td>{{ month.theoric_30_days.biomass_increase }}</td>
-            <td>{{ month.theoric_30_days.biomass_total }}</td>
-            <td>{{ month.theoric_30_days.medium_weight }}</td>
-            <td>{{ month.theoric_medium_weight_with_real_feeding }}</td>
-            <td>{{ month.real_30_days.feeding }}</td>
-            <td>{{ month.real_30_days.medium_weight_with_real_feeding }}</td>
-            <td>{{ month.real_30_days.medium_weight }}</td>
-            <td>{{ month.real_30_days.biomass }}</td>
-            <td>{{ month.mortality.theoric_percentage }}</td>
-            <td>{{ month.mortality.theoric_number }}</td>
-            <td>{{ month.mortality.real_percentage }}</td>
-            <td>{{ month.mortality.real_number }}</td>
-            <td>{{ month.calibration.goes_to }}</td>
-            <td>{{ month.calibration.came_from }}</td>
-            <td>{{ month.biomass_increase_with_mortality }}</td>
-            <td>{{ month.real_fc_with_mortality }}</td>
-
-
+            <th scope="col">Ano</th>
+            <th scope="col">Mês</th>
+            <th scope="col">Nº Peixes</th>
+            <th scope="col">PM</th>
+            <th scope="col">Biom.</th>
+            <th scope="col">% Alim</th>
+            <th scope="col">Kg</th>
+            <th scope="col">Sacos</th>
+            <th scope="col">Tot. 30 Dias</th>
+            <th scope="col">FC</th>
+            <th scope="col">Aum. Biom.</th>
+            <th scope="col">Biom. Total</th>
+            <th scope="col">PM</th>
+            <th scope="col">PM Teórico C/ Alim. Real</th>
+            <th scope="col">Alim. Real</th>
+            <th scope="col">PM Teórico C/ Alim. Real</th>
+            <th scope="col">PM Real</th>
+            <th scope="col">Biom. Real</th>
+            <th scope="col">%</th>
+            <th scope="col">Nº</th>
+            <th scope="col">%</th>
+            <th scope="col">Nº</th>
+            <th scope="col">Para</th>
+            <th scope="col">De</th>
+            <th scope="col">Aum. Biom.</th>
+            <th scope="col">FC Real</th>
         </tr>
-    {% endfor %}
+        </thead>
+        <tbody>
+        {% for month in cage.monthstat_set.all %}
+            <tr>
+                <td scope="row">{{ month.year }}</td>
+                <th>{{ month.month_name }}</th>
+                <td>{{ month.num_fishes }}</td>
+                <td>{{ month.medium_weight }}</td>
+                <td>{{ month.biomass }}</td>
+                <td>{{ month.percent_feeding }}</td>
+                <td>{{ month.food_portion_kg }}</td>
+                <td>{{ month.food_portion_bags }}</td>
+                <td>{{ month.food_portion_total_30_days }}</td>
+                <td>{{ month.fc }}</td>
+                <td>{{ month.theoric_30_days_biomass_increase }}</td>
+                <td>{{ month.theoric_30_days_biomass_total }}</td>
+                <td>{{ month.theoric_30_days_medium_weight }}</td>
+                <td>{{ month.theoric_medium_weight_with_real_feeding }}</td>
+                <td>{{ month.real_30_days_feeding }}</td>
+                <td>{{ month.real_30_days_medium_weight_with_real_feeding }}</td>
+                <td>{{ month.real_30_days_medium_weight }}</td>
+                <td>{{ month.real_30_days_biomass }}</td>
+                <td>{{ month.mortality_theoric_percentage }}</td>
+                <td>{{ month.mortality_theoric_number }}</td>
+                <td>{{ month.mortality_real_percentage }}</td>
+                <td>{{ month.mortality_real_number }}</td>
+                <td>{{ month.calibration_goes_to }}</td>
+                <td>{{ month.calibration_came_from }}</td>
+                <td>{{ month.biomass_increase_with_mortality }}</td>
+                <td>{{ month.real_fc_with_mortality }}</td>
 
-    </tbody>
-</table>
+
+            </tr>
+        {% endfor %}
+
+        </tbody>
+    </table>
+    <form method="post">
+        {% csrf_token %}
+        {{ form }}
+        <input type="submit" value="Submit">
+    </form>
 </div>
 
 <script>
+
+    ///////////// CALCULO DE PM Teórico C/ Alim. Real
+
+    $('#id_theoric_30_days_medium_weight').change(function () {
+        if ($('#id_fc').val() && $('#id_biomass').val() && $('#id_num_fishes').val()) {
+            $('#id_theoric_medium_weight_with_real_feeding').val(((Number($('#id_theoric_30_days_medium_weight').val() / Number($('#id_fc').val())) + Number($('#id_biomass').val())) / Number($('#id_num_fishes').val()));
+            $("#id_theoric_medium_weight_with_real_feeding").trigger("change");
+        }
+    });
+    $('#id_fc').change(function () {
+        if ($('#id_theoric_30_days_medium_weight').val() && $('#id_biomass').val() && $('#id_num_fishes').val()) {
+            $('#id_theoric_medium_weight_with_real_feeding').val(((Number($('#id_theoric_30_days_medium_weight').val() / Number($('#id_fc').val())) + Number($('#id_biomass').val())) / Number($('#id_num_fishes').val()));
+            $("#id_theoric_medium_weight_with_real_feeding").trigger("change");
+        }
+    });
+    $('#id_biomass').change(function () {
+        if ($('#id_fc').val() && $('#id_theoric_30_days_medium_weight').val() && $('#id_num_fishes').val()) {
+            $('#id_theoric_medium_weight_with_real_feeding').val(((Number($('#id_theoric_30_days_medium_weight').val() / Number($('#id_fc').val())) + Number($('#id_biomass').val())) / Number($('#id_num_fishes').val()));
+            $("#id_theoric_medium_weight_with_real_feeding").trigger("change");
+        }
+    });
+    $('#id_num_fishes').change(function () {
+        if ($('#id_fc').val() && $('#id_biomass').val() && $('#id_theoric_30_days_medium_weight').val()) {
+            $('#id_theoric_medium_weight_with_real_feeding').val(((Number($('#id_theoric_30_days_medium_weight').val() / Number($('#id_fc').val())) + Number($('#id_biomass').val())) / Number($('#id_num_fishes').val()));
+            $("#id_theoric_medium_weight_with_real_feeding").trigger("change");
+        }
+    });
+
+    ////////////////////////////////////////////////////////
+
+    ///////////// CALCULO DE KG RAÇÃO
+    $('#id_biomass').change(function () {
+        if ($('#id_percent_feeding').val()) {
+            $('#id_food_portion_kg').val(Number($('#id_percent_feeding').val()) * Number($('#id_biomass').val()));
+            $("#id_food_portion_kg").trigger("change");
+
+        }
+    });
+
+    $('#id_percent_feeding').change(function () {
+        if ($('#id_biomass').val()) {
+            $('#id_food_portion_kg').val(Number($('#id_percent_feeding').val()) * Number($('#id_biomass').val()));
+            $("#id_food_portion_kg").trigger("change");
+
+        }
+    });
+    ////////////////////////////////////////////////////////
+
+    ///////////// CALCULO DE SACOS RAÇÃO
+
+    $('#id_food_portion_kg').change(function () {
+        $('#id_food_portion_bags').val(Number($('#id_food_portion_kg').val()) / 25);
+        $("#id_food_portion_bags").trigger("change");
+    });
+
+    ////////////////////////////////////////////////////////
+
+    ///////////// CALCULO DE TOTAL 30 DIAS
+    $('#id_food_portion_total_30_days').change(function () {
+        $('#id_food_portion_bags').val(Number($('#id_food_portion_kg').val()) * 30);
+        $("#id_food_portion_bags").trigger("change");
+
+    });
+
+    ////////////////////////////////////////////////////////
+
+    ///////////// CALCULO DE Aum. Biom.
+    $('#id_food_portion_total_30_days').change(function () {
+        if ($('#id_fc').val()) {
+
+            $('#id_theoric_30_days_biomass_increase').val(Number($('#id_food_portion_total_30_days').val()) * Number($('#id_fc').val()));
+            $("#id_theoric_30_days_biomass_increase").trigger("change");
+        }
+    });
+
+    $('#id_fc').change(function () {
+        if ($('#id_food_portion_total_30_days').val()) {
+
+            $('#id_theoric_30_days_biomass_increase').val(Number($('#id_food_portion_total_30_days').val()) * Number($('#id_fc').val()));
+            $("#id_theoric_30_days_biomass_increase").trigger("change");
+        }
+    });
+
+    ////////////////////////////////////////////////////////
+
+    ///////////// CALCULO DE Biom. Tot.
+    $('#id_biomass').change(function () {
+        if ($('#id_theoric_30_days_biomass_increase').val()) {
+            $('#id_theoric_30_days_biomass_total').val(Number($('#id_biomass').val()) + Number($('#id_theoric_30_days_biomass_increase').val()));
+            $("#id_theoric_30_days_biomass_total").trigger("change");
+        }
+    });
+
+    $('#id_theoric_30_days_biomass_increase').change(function () {
+        if ($('#id_biomass').val()) {
+            $('#id_theoric_30_days_biomass_total').val(Number($('#id_biomass').val()) + Number($('#id_theoric_30_days_biomass_increase').val()));
+            $("#id_theoric_30_days_biomass_total").trigger("change");
+        }
+    });
+
+    ////////////////////////////////////////////////////////
+
+    ///////////// CALCULO DE PM
+    $('#id_theoric_30_days_biomass_total').change(function () {
+        if ($('#id_num_fishes').val()) {
+            $('#id_theoric_30_days_medium_weight').val(Number($('#id_theoric_30_days_biomass_total').val()) / Number($('#id_num_fishes').val()));
+            $("#id_theoric_30_days_medium_weight").trigger("change");
+        }
+    });
+
+    $('#id_num_fishes').change(function () {
+        if ($('#id_theoric_30_days_biomass_total').val()) {
+            $('#id_theoric_30_days_medium_weight').val(Number($('#id_theoric_30_days_biomass_total').val()) / Number($('#id_num_fishes').val()));
+            $("#id_theoric_30_days_medium_weight").trigger("change");
+        }
+    });
+
+    ////////////////////////////////////////////////////////
+
+    ///////////// CALCULO DE PM
+    $('#id_real_30_days_feeding').change(function () {
+        if ($('#id_fc').val() && $('#id_biomass').val() && $('#id_num_fishes').val()) {
+            $('#id_real_30_days_medium_weight_with_real_feeding').val(((Number($('#id_real_30_days_feeding').val() / Number($('#id_fc').val())) + Number($('#id_biomass').val())) / Number($('#id_num_fishes').val()));
+            $("#id_real_30_days_medium_weight_with_real_feeding").trigger("change");
+        }
+    });
+    $('#id_fc').change(function () {
+        if ($('#id_real_30_days_feeding').val() && $('#id_biomass').val() && $('#id_num_fishes').val()) {
+            $('#id_real_30_days_medium_weight_with_real_feeding').val(((Number($('#id_real_30_days_feeding').val() / Number($('#id_fc').val())) + Number($('#id_biomass').val())) / Number($('#id_num_fishes').val()));
+            $("#id_real_30_days_medium_weight_with_real_feeding").trigger("change");
+        }
+    });
+    $('#id_biomass').change(function () {
+        if ($('#id_fc').val() && $('#id_real_30_days_feeding').val() && $('#id_num_fishes').val()) {
+            $('#id_real_30_days_medium_weight_with_real_feeding').val(((Number($('#id_real_30_days_feeding').val() / Number($('#id_fc').val())) + Number($('#id_biomass').val())) / Number($('#id_num_fishes').val()));
+            $("#id_real_30_days_medium_weight_with_real_feeding").trigger("change");
+        }
+    });
+    $('#id_num_fishes').change(function () {
+        if ($('#id_fc').val() && $('#id_biomass').val() && $('#id_real_30_days_feeding').val()) {
+            $('#id_real_30_days_medium_weight_with_real_feeding').val(((Number($('#id_real_30_days_feeding').val() / Number($('#id_fc').val())) + Number($('#id_biomass').val())) / Number($('#id_num_fishes').val()));
+            $("#id_real_30_days_medium_weight_with_real_feeding").trigger("change");
+        }
+    });
+
 
 </script>

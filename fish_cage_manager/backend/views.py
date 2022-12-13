@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 
+from backend.forms import MonthStatForm
 from backend.models import Cage
 
 
@@ -35,9 +36,18 @@ def delete_cage(request, cage_id):
 
 def individual_cage(request, cage_id):
     cage = Cage.objects.filter(cage_id=cage_id).first()
-    monthstats = cage.monthstat_set.all()
-    print(monthstats)
-    return render(request, "individual_cage.html", context={"cage": cage})
+
+    # create object of form
+    form = MonthStatForm(request.POST or None, request.FILES or None, initial={'cage': cage_id})
+
+
+    # check if form data is valid
+    if form.is_valid():
+        # save the form data to model
+        print(form.cleaned_data)
+        form.save()
+
+    return render(request, "individual_cage.html", context={"cage": cage, "form": form})
 
 
 def statistics(request):
