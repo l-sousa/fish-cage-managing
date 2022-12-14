@@ -20,7 +20,7 @@
 </div>
 <div class="p-5">
 
-    <table class="table table-hover" style="max-width: 100em;">
+    <table class="table table-hover">
         <thead>
         <tr>
             <th scope="col">Ano</th>
@@ -54,6 +54,7 @@
         </thead>
         <tbody>
 
+
         <tr>
             <form method="post">
                 {% csrf_token %}
@@ -64,28 +65,63 @@
                     {{ hidden_field }}
                 {% endfor %}
 
-                {% for field in form.visible_fields %}
-                    <td>
-                        {{ field.errors }}
-                        {{ field }}
-                        {{ field.help_text }}
-                    </td>
-                {% endfor %}
+                <!-- month name -->
+                <td>{{ form.visible_fields.0 }}</td>
+                <!-- temp-->
+                <td>{{ form.visible_fields.1 }}</td>
+                <!-- year-->
+                <td>{{ form.visible_fields.2 }}</td>
+                <!-- num fishes-->
+                <td>{{ form.visible_fields.3 }}</td>
+                <!-- id_theoric_medium_weight_with_real_feeding-->
+                <td>{{ form.visible_fields.4 }}</td>
+                <!-- PM-->
+                <td>{{ form.visible_fields.5 }}</td>
+                <!-- biomassa-->
+                <td>{{ form.visible_fields.6 }}</td>
+                <!-- % alim-->
+                <td>{{ form.visible_fields.7 }}</td>
+                <!-- fc-->
+                <td>{{ form.visible_fields.8 }}</td>
+                <!-- kg-->
+                <td>{{ form.visible_fields.9 }}</td>
+                <!-- id_food_portion_total_30_days-->
+                <td>{{ form.visible_fields.11 }}</td>
+                <!-- id_theoric_30_days_biomass_increase-->
+                <td>{{ form.visible_fields.12 }}</td>
+                <!-- id_theoric_30_days_biomass_total-->
+                <td>{{ form.visible_fields.13 }}</td>
+                <!-- id_theoric_30_days_medium_weight-->
+                <td>{{ form.visible_fields.14 }}</td>
+                <!-- id_real_30_days_feeding-->
+                <td>{{ form.visible_fields.15 }}</td>
+                <!-- id_real_30_days_medium_weight_with_real_feeding-->
+                <td>{{ form.visible_fields.16 }}</td>
+                <!-- id_real_30_days_real_medium_weight-->
+                <td>{{ form.visible_fields.17 }}</td>
+                <!-- id_real_30_days_biomass-->
+                <td>{{ form.visible_fields.18 }}</td>
+                <!-- id_mortality_theoric_percentage -->
+                <td>{{ form.visible_fields.19 }}</td>
+                <!-- id_mortality_theoric_number-->
+                <td>{{ form.visible_fields.20 }}</td>
+                <!-- id_mortality_real_percentage-->
+                <td>{{ form.visible_fields.21 }}</td>
+                <!-- id_mortality_real_number-->
+                <td>{{ form.visible_fields.22 }}</td>
+                <!-- id_calibration_goes_to-->
+                <td>{{ form.visible_fields.23 }}</td>
+                <!-- id_calibration_came_from-->
+                <td>{{ form.visible_fields.24 }}</td>
 
                 <td>
-                    <hr>
-                </td>
-                <td>
-                    <hr>
-                </td>
-
-                <td>
-                    <input class="btn btn-primary" type="submit" value="INSERIR">
+                    <input type="submit" value="Submit">
                 </td>
             </form>
         </tr>
 
-        {% for month in monthstats %}
+
+        {% for month in cage.monthstat_set.all %}
             <tr>
                 <td scope="row">{{ month.year }}</td>
                 <th>{{ month.month_name }}</th>
@@ -114,14 +150,6 @@
                 <td>{{ month.calibration_came_from }}</td>
                 <td>{{ month.biomass_increase_with_mortality }}</td>
                 <td>{{ month.real_fc_with_mortality }}</td>
-                <td>
-                    <a class="btn btn-warning"
-                       href="{% url 'update_monthstat' monthstat_id=month.pk cage_id=cage.cage_id %}">EDITAR</a>
-                </td>
-                <td>
-                    <a class="btn btn-danger"
-                       href="{% url 'delete_monthstat' monthstat_id=month.pk cage_id=cage.cage_id %}">APAGAR</a>
-                </td>
             </tr>
         {% endfor %}
 
@@ -251,6 +279,7 @@
         if ($('#id_percent_feeding').val()) {
             $('#id_food_portion_kg').val((Number($('#id_percent_feeding').val()) * Number($('#id_biomass').val())) / 100);
             $("#id_food_portion_kg").trigger("change");
+
         }
     });
 
@@ -258,6 +287,7 @@
         if ($('#id_biomass').val()) {
             $('#id_food_portion_kg').val((Number($('#id_percent_feeding').val()) * Number($('#id_biomass').val())) / 100);
             $("#id_food_portion_kg").trigger("change");
+
         }
     });
     ////////////////////////////////////////////////////////
@@ -422,6 +452,5 @@
             $("#id_mortality_real_percentage").trigger("change");
         }
     });
-
 
 </script>

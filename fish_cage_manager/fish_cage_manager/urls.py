@@ -25,5 +25,7 @@ urlpatterns = [
     path('stats/', views.statistics, name="stats"),
     path('new_cage/', views.new_cage, name="new_cage"),
     path('delete_cage/<int:cage_id>', views.delete_cage, name="delete_cage"),
+    path('update/monthstat/<int:monthstat_id>/<int:cage_id>', views.update_monthstat, name="update_monthstat"),
+    path('delete/monthstat/<int:monthstat_id>/<int:cage_id>', views.delete_monthstat, name="delete_monthstat"),
 
 ]

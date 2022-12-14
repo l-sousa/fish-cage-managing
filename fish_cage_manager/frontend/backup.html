@@ -20,7 +20,7 @@
 </div>
 <div class="p-5">
 
-    <table class="table table-hover" style="max-width: 100em;">
+    <table class="table table-hover">
         <thead>
         <tr>
             <th scope="col">Ano</th>
@@ -53,39 +53,7 @@
         </tr>
         </thead>
         <tbody>
-
-        <tr>
-            <form method="post">
-                {% csrf_token %}
-                {{ form.non_field_errors }}
-
-                {% for hidden_field in form.hidden_fields %}
-                    {{ hidden_field.errors }}
-                    {{ hidden_field }}
-                {% endfor %}
-
-                {% for field in form.visible_fields %}
-                    <td>
-                        {{ field.errors }}
-                        {{ field }}
-                        {{ field.help_text }}
-                    </td>
-                {% endfor %}
-
-                <td>
-                    <hr>
-                </td>
-                <td>
-                    <hr>
-                </td>
-
-                <td>
-                    <input class="btn btn-primary" type="submit" value="INSERIR">
-                </td>
-            </form>
-        </tr>
-
-        {% for month in monthstats %}
+        {% for month in cage.monthstat_set.all %}
             <tr>
                 <td scope="row">{{ month.year }}</td>
                 <th>{{ month.month_name }}</th>
@@ -114,20 +82,16 @@
                 <td>{{ month.calibration_came_from }}</td>
                 <td>{{ month.biomass_increase_with_mortality }}</td>
                 <td>{{ month.real_fc_with_mortality }}</td>
-                <td>
-                    <a class="btn btn-warning"
-                       href="{% url 'update_monthstat' monthstat_id=month.pk cage_id=cage.cage_id %}">EDITAR</a>
-                </td>
-                <td>
-                    <a class="btn btn-danger"
-                       href="{% url 'delete_monthstat' monthstat_id=month.pk cage_id=cage.cage_id %}">APAGAR</a>
-                </td>
             </tr>
         {% endfor %}
 
         </tbody>
     </table>
-
+    <form method="post">
+        {% csrf_token %}
+        {{ form }}
+        <input type="submit" value="Submit">
+    </form>
 </div>
 
 <script>
@@ -251,6 +215,7 @@
         if ($('#id_percent_feeding').val()) {
             $('#id_food_portion_kg').val((Number($('#id_percent_feeding').val()) * Number($('#id_biomass').val())) / 100);
             $("#id_food_portion_kg").trigger("change");
+
         }
     });
 
@@ -258,6 +223,7 @@
         if ($('#id_biomass').val()) {
             $('#id_food_portion_kg').val((Number($('#id_percent_feeding').val()) * Number($('#id_biomass').val())) / 100);
             $("#id_food_portion_kg").trigger("change");
+
         }
     });
     ////////////////////////////////////////////////////////

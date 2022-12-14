@@ -7,8 +7,6 @@ from backend.models import Cage, MonthStat
 from backend.tables import *
 
 
-
-
 # tables["6-8"]["1500-2500"]["mort"]
 
 # ALL CAGE MANAGING
@@ -42,7 +40,7 @@ def delete_cage(request, cage_id):
 # SINGLE CAGE MANAGING
 
 def individual_cage(request, cage_id):
-    cage = Cage.objects.filter(cage_id=cage_id).first()
+    cage = Cage.objects.get(cage_id=cage_id)
 
     # create object of form
     form = MonthStatForm(request.POST or None, request.FILES or None, initial={'cage': cage_id})
@@ -55,14 +53,18 @@ def individual_cage(request, cage_id):
 
         update_previous_month_data(form.cleaned_data['month_name'], form.cleaned_data['year'], next_month_fishes,
                                    next_month_medium_weight)
-
         form.save()
 
-    return render(request, "individual_cage.html", context={"cage": cage, "form": form, "temperature_tables": json.dumps(values_tables), "month_temperature_table": json.dumps(month_temperature_table)})
+    return render(request, "individual_cage.html",
+                  context={"cage": cage,
+                           "monthstats": sorted(cage.monthstat_set.all(),
+                                                key=lambda x: (x.year, months.index(x.month_name)),
+                                                reverse=True), "form": form,
+                           "temperature_tables": json.dumps(values_tables),
+                           "month_temperature_table": json.dumps(month_temperature_table)})
 
 
 def update_previous_month_data(month, year, new_month_num_fishes, new_month_medium_weight):
-
     previous_month = months[months.index(month) - 1]
 
     if previous_month == "Dezembro":
@@ -79,11 +81,34 @@ def update_previous_month_data(month, year, new_month_num_fishes, new_month_medi
         previous_monthstat[0], "medium_weight") * getattr(previous_monthstat[0], "num_fishes")
 
     previous_monthstat[0].real_fc_with_mortality = getattr(previous_monthstat[0], "real_30_days_feeding") / getattr(
-        previous_monthstat[0], "biomass_increase_with_mortality")
+        previous_monthstat[0], "biomass_increase_with_mortality") if getattr(previous_monthstat[0], "biomass_increase_with_mortality") else 0
 
     previous_monthstat[0].save()
 
     return
+
+
+def update_monthstat(request, monthstat_id, cage_id):
+    monthstat = MonthStat.objects.get(pk=monthstat_id)
+
+    if request.method == 'POST':
+
+        form = MonthStatForm(request.POST, instance=monthstat)
+
+        if form.is_valid():
+            print("valid")
+            form.save()
+            return redirect("/cage/" + str(cage_id))
+    else:
+        form = MonthStatForm(instance=monthstat)
+
+    return render(request, 'update_monthstat.html', {'form': form})
+
+
+def delete_monthstat(request, monthstat_id, cage_id):
+    monthstat = MonthStat.objects.get(pk=monthstat_id)
+    monthstat.delete()
+    return redirect("/cage/" + str(cage_id))
 
 
 def statistics(request):
