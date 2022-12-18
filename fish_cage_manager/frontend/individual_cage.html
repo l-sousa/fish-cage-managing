@@ -57,6 +57,11 @@
 </style>
 <body>
 
+
+{% if error %}
+    <script>alert("{{ error }}");</script>
+{% endif %}
+
 {# Display a form #}
 <div class="jumbotron mb-0 bg-light">
     <h1 class="display-4">Jaula nº {{ cage.cage_id }}</h1>
@@ -163,44 +168,48 @@
 
         {% for month in monthstats %}
 
-            <tr>
-                <td>
-                    <a class="btn btn-warning"
-                       href="{% url 'update_monthstat' monthstat_id=month.pk cage_id=cage.cage_id %}">EDITAR</a>
-                </td>
-                <td>
-                    <a class="btn btn-danger"
-                       href="{% url 'delete_monthstat' monthstat_id=month.pk cage_id=cage.cage_id %}">APAGAR</a>
-                </td>
-                <td scope="row">{{ month.year }}</td>
-                <th>{{ month.month_name }}</th>
-                <th>{{ month.temperature }}</th>
-                <td>{{ month.num_fishes }}</td>
-                <td>{{ month.medium_weight }}</td>
-                <td>{{ month.biomass }}</td>
-                <td>{{ month.percent_feeding }}</td>
-                <td>{{ month.food_portion_kg }}</td>
-                <td>{{ month.food_portion_bags }}</td>
-                <td>{{ month.food_portion_total_30_days }}</td>
-                <td>{{ month.fc }}</td>
-                <td>{{ month.theoric_30_days_biomass_increase }}</td>
-                <td>{{ month.theoric_30_days_biomass_total }}</td>
-                <td>{{ month.theoric_30_days_medium_weight }}</td>
-                <td>{{ month.theoric_medium_weight_with_real_feeding }}</td>
-                <td>{{ month.real_30_days_feeding }}</td>
-                <td>{{ month.real_30_days_medium_weight_with_real_feeding }}</td>
-                <td>{{ month.real_30_days_real_medium_weight }}</td>
-                <td>{{ month.real_30_days_biomass }}</td>
-                <td>{{ month.mortality_theoric_percentage }}</td>
-                <td>{{ month.mortality_theoric_number }}</td>
-                <td>{{ month.mortality_real_percentage }}</td>
-                <td>{{ month.mortality_real_number }}</td>
-                <td>{{ month.calibration_goes_to }}</td>
-                <td>{{ month.calibration_came_from }}</td>
-                <td>{{ month.biomass_increase_with_mortality }}</td>
-                <td>{{ month.real_fc_with_mortality }}</td>
-                <td></td>
-            </tr>
+            {% if month.pk == new_monthstat_pk %}
+                <tr class="bg-success">
+                    {% else %}
+                <tr>
+            {% endif %}
+        <td>
+            <a class="btn btn-warning"
+               href="{% url 'update_monthstat' monthstat_id=month.pk cage_id=cage.cage_id %}">EDITAR</a>
+        </td>
+        <td>
+            <a class="btn btn-danger"
+               href="{% url 'delete_monthstat' monthstat_id=month.pk cage_id=cage.cage_id %}">APAGAR</a>
+        </td>
+        <th>{{ month.year }}</th>
+        <th>{{ month.month_name }}</th>
+        <td>{{ month.temperature }}</td>
+        <td>{{ month.num_fishes }}</td>
+        <td>{{ month.medium_weight }}</td>
+        <td>{{ month.biomass }}</td>
+        <td>{{ month.percent_feeding }}</td>
+        <td>{{ month.food_portion_kg }}</td>
+        <td>{{ month.food_portion_bags }}</td>
+        <td>{{ month.food_portion_total_30_days }}</td>
+        <td>{{ month.fc }}</td>
+        <td>{{ month.theoric_30_days_biomass_increase }}</td>
+        <td>{{ month.theoric_30_days_biomass_total }}</td>
+        <td>{{ month.theoric_30_days_medium_weight }}</td>
+        <td>{{ month.theoric_medium_weight_with_real_feeding }}</td>
+        <td>{{ month.real_30_days_feeding }}</td>
+        <td>{{ month.real_30_days_medium_weight_with_real_feeding }}</td>
+        <td>{{ month.real_30_days_real_medium_weight }}</td>
+        <td>{{ month.real_30_days_biomass }}</td>
+        <td>{{ month.mortality_theoric_percentage }}</td>
+        <td>{{ month.mortality_theoric_number }}</td>
+        <td>{{ month.mortality_real_percentage }}</td>
+        <td>{{ month.mortality_real_number }}</td>
+        <td>{{ month.calibration_goes_to }}</td>
+        <td>{{ month.calibration_came_from }}</td>
+        <td>{{ month.biomass_increase_with_mortality }}</td>
+        <td>{{ month.real_fc_with_mortality }}</td>
+        <td></td>
+        </tr>
         {% endfor %}
 
         </tbody>
@@ -221,33 +230,35 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body" >
+            <div class="modal-body container p-5">
+
                 {% for i in cages %}
                     {% if i.cage_id == cage.cage_id %}
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="flexRadioDisabled"
-                                   id="flexRadioDisabled" disabled>
-                            <label class="form-check-label" for="flexRadioDisabled">
-                                {{ i }}
-                            </label>
-                        </div>
+                        <p>{{ i }}, não pode usar esta opção, é a própria jaula.</p>
+                        <hr>
                     {% else %}
                         {% if i.monthstat_set.all %}
-                            <input class="form-check-input" type="checkbox" value=""
-                                   id="cage_id_{{ i.cage_id }}_checkbox">
-                            <label class="form-check-label" for="flexCheckDefault">{{ i }}</label>
+                            <div class="form-check row">
+                                <div class="col d-flex flex-wrap flex-column justify-content-center align-items-center">
+                                    <input class="form-check-input" type="checkbox" value=""
+                                           id="cage_id_{{ i.cage_id }}_checkbox">
+                                    <label class="form-check-label" for="flexCheckDefault">{{ i }}</label>
+                                </div>
+                                <div class="col d-flex flex-wrap flex-column justify-content-center align-items-center">
+                                    <label class="form-check-label" for="num_fishes_out">Número de peixes para
+                                        sair:</label>
+                                    <input type="number" name="num_fishes_out" step="any" required=""
+                                           id="cage_id_{{ i.cage_id }}_num_fishes_out"
+                                           placeholder="{{ i.monthstat_set.all | return_latest_num_fishes }}">
 
-                            <label class="form-check-label" for="num_fishes_out">Número de peixes para sair:</label>
-                            <input type="number" name="num_fishes_out" step="any" required=""
-                                   id="cage_id_{{ i.cage_id }}_num_fishes_out"
-                                   placeholder="{{ i.monthstat_set.all | return_latest_num_fishes }}">
-
-                            <input type="number" name="latest_monthstat_id" step="any" required=""
-                                   id="cage_id_{{ i.cage_id }}_latest_monthstat_id"
-                                   value="{{ i.monthstat_set.all | return_latest_monthstat_id }}" hidden>
+                                    <input type="number" name="latest_monthstat_id" step="any" required=""
+                                           id="cage_id_{{ i.cage_id }}_latest_monthstat_id"
+                                           value="{{ i.monthstat_set.all | return_latest_monthstat_id }}" hidden>
+                                </div>
+                            </div>
+                            <hr>
 
                         {% endif %}
-
                     {% endif %}
 
                 {% endfor %}
@@ -333,11 +344,10 @@
 
 
         for (let i = 0; i < {{cages_ids | length}}; i++) {
-            if ($("#cage_id_" + {{cages_ids}}[i] +"_checkbox").is(":checked")) {
-                para_values[i] = [$("#cage_id_" + {{cages_ids}}[i] +"_num_fishes_out").val(), $("#cage_id_" + {{cages_ids}}[i] +"_latest_monthstat_id").val()]
+            if ($("#cage_id_" + {{cages_ids}}[i] + "_checkbox").is(":checked")) {
+                para_values[i] = [$("#cage_id_" + {{cages_ids}}[i] + "_num_fishes_out").val(), $("#cage_id_" + {{cages_ids}}[i] + "_latest_monthstat_id").val()]
             }
         }
-        alert(JSON.stringify(para_values));
     });
 
 

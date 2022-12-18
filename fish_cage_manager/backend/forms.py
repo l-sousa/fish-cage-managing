@@ -33,14 +33,15 @@ class MonthStatForm(forms.ModelForm):
 
 
 class WeightRange(forms.Form):
-    classe_tamanho = forms.ChoiceField(widget=forms.Select, choices=(('', 'Selecionar Classe Tamanho'),
-                                                                     ('0-10', '0-10'),
-                                                                     ('10-50', '10-50'),
-                                                                     ('50-100', '50-100'),
-                                                                     ('100-200', '100-200'),
-                                                                     ('200-350', '200-350'),
-                                                                     ('350-500', '350-500'),
-                                                                     ('500-600', '500-600'),
-                                                                     ('600-700', '600-700'),
-                                                                     ('700-1', '700-1'),
-                                                                     ('1-1,5', '1-1,5')))
+    classe_tamanho = forms.ChoiceField(widget=forms.Select(attrs={'class': 'form-control'}),
+                                       choices=(('', 'Selecionar'),
+                                                ('0-10', '0-10'),
+                                                ('10-50', '10-50'),
+                                                ('50-100', '50-100'),
+                                                ('100-200', '100-200'),
+                                                ('200-350', '200-350'),
+                                                ('350-500', '350-500'),
+                                                ('500-600', '500-600'),
+                                                ('600-700', '600-700'),
+                                                ('700-1', '700-1'),
+                                                ('1-1,5', '1-1,5')))

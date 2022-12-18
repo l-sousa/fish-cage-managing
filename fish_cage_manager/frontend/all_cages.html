@@ -34,14 +34,13 @@
                 <div class="card bg-light m-2" style="width: 18rem;">
                     {#                    <img src="..." class="card-img-top" alt="...">#}
                     <div class="card-body">
-                        <h5 class="card-title">{{ cage.cage_id }}</h5>
+                        <h1 class="card-title">{{ cage.cage_id }}</h1>
                         {% if new_cage_id == cage.cage_id %}
                             <h6 class="card-title">(NOVO)</h6>
                         {% else %}
                             <br>
                         {% endif %}
 
-                        <p class="card-text">asdasdasdsad</p>
                         <a href="{% url 'individual_cage' cage.cage_id %}" class="btn btn-primary">Ver Jaula</a>
                         <a href="{% url 'delete_cage' cage.cage_id %}" class="btn btn-danger">APAGAR</a>
                     </div>

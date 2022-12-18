@@ -19,6 +19,21 @@
         padding: 10px !important;
     }
 
+    td, th {
+        text-align: center;
+        vertical-align: middle !important;
+
+    }
+
+    .col {
+        height: 20em;
+        overflow-y: auto;
+    }
+
+    select {
+        width: auto !important;
+    }
+
 </style>
 {# Display a form #}
 <div class="jumbotron mb-0 bg-light">
@@ -28,21 +43,20 @@
 </div>
 
 
-<div class="table-responsive container m-0">
+<div class="container">
     <div class="row">
+        <div class="col">
+            <caption>
+                <strong>Total de KGs ano e mês</strong>
+            </caption>
+            <table class="table table-hover table-responsive table-striped">
 
-        <div class="col-1">
-            <table class="table table-hover table-striped">
-                <caption>
-                    <span class=""><strong>Total de KGs ano e mês</strong></span>
-                </caption>
                 <thead>
                 <tr>
                     <th scope="col">Ano</th>
                     <th scope="col">Mês</th>
                     <th scope="col">kg alimento mês</th>
                     <th scope="col">kg alimento dia</th>
-
                 </tr>
                 </thead>
                 <tbody>
@@ -54,6 +68,97 @@
                             <td>{{ monthname }}</td>
                             <td>{{ monthkgs }}</td>
                             <td>{{ monthkgs|divide_by_30 }}</td>
+                        </tr>
+                    {% endfor %}
+                {% endfor %}
+
+                </tbody>
+            </table>
+        </div>
+
+
+        <div class="col">
+            <form class="d-flex flex-wrap flex-column pt-5 justify-content-center align-items-center" method="post"
+                  novalidate>
+                {% csrf_token %}
+                {{ form }}
+                <input class="btn btn-primary m-2" type="submit" value="ATUALIZAR TABELA">
+
+            </form>
+            <caption>
+                <span class=""><strong>Previsões de Venda</strong></span>
+            </caption>
+            <table class="table table-hover table-responsive table-striped">
+
+                <thead>
+                <tr>
+                    <th>Ano</th>
+                    <th>Mês</th>
+                    <th>Número de Peixes</th>
+                    <th>Biomassa</th>
+
+                </tr>
+                </thead>
+                <tbody>
+
+                {% for year, months in predictions.items %}
+                    {% for monthname, data in months.items %}
+                        {% if not data.biomassa == 0 %}
+                            <tr>
+                                <td>{{ year }}</td>
+                                <td>{{ monthname }}</td>
+                                <td>{{ data.num_peixes }}</td>
+                                <td>{{ data.biomassa }}</td>
+
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                {% endfor %}
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row"><br><br></div>
+    <div class="row mb-5">
+        <div class="col">
+            <caption>
+                <span class=""><strong>Distribuição geral de tamanhos</strong></span>
+            </caption>
+            <table class="table table-hover table-responsive table-striped">
+
+                <thead>
+                <tr>
+                    <th scope="col">Ano</th>
+                    <th scope="col">Mês</th>
+                    <th scope="col">0-10</th>
+                    <th scope="col">10-50</th>
+                    <th scope="col">50-100</th>
+                    <th scope="col">100-200</th>
+                    <th scope="col">200-350</th>
+                    <th scope="col">350-500</th>
+                    <th scope="col">500-600</th>
+                    <th scope="col">600-700</th>
+                    <th scope="col">700-1</th>
+                    <th scope="col">1-1,5</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                {% for year, months in fish_weight_distribution.items %}
+                    {% for monthname, distribution in months.items %}
+                        <tr>
+                            <td>{{ year }}</td>
+                            <td>{{ monthname }}</td>
+                            {% for range, range_data in distribution.items %}
+                                {% if not forloop.last %}
+                                    {% if range_data == 0 %}
+                                        <td>-</td>
+                                    {% else %}
+                                        <td>{{ range_data }}</td>
+                                    {% endif %}
+                                {% endif %}
+                            {% endfor %}
 
                         </tr>
                     {% endfor %}
@@ -66,19 +171,4 @@
 
 </div>
 
-
-<div class="p-5">
-    <div class="row d-flex flex-row flex-wrap">
-        {% for year in total_kgs %}
-
-        {% endfor %}
-    </div>
-</div>
-
-
-<form method="post" novalidate>
-  {% csrf_token %}
-  {{ form }}
-  <button type="submit">Submit</button>
-</form>
 

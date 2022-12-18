@@ -49,9 +49,27 @@ def individual_cage(request, cage_id):
     # create object of form
     form = MonthStatForm(request.POST or None, request.FILES or None, initial={'cage': cage_id})
 
+    cages = Cage.objects.all()
+    cages_ids = [cage.cage_id for cage in cages]
+
+    obj = None
     # check if form data is valid
     if form.is_valid():
         # save the form data to model
+
+        if MonthStat.objects.all().filter(month_name=form.cleaned_data['month_name'], year=form.cleaned_data['year'],
+                                          cage_id=cage.cage_id):
+            return render(request, "individual_cage.html",
+                          context={"cage": cage,
+                                   "monthstats": sorted(cage.monthstat_set.all(),
+                                                        key=lambda x: (x.year, months.index(x.month_name)),
+                                                        reverse=True), "form": form,
+                                   "temperature_tables": json.dumps(values_tables),
+                                   "month_temperature_table": json.dumps(month_temperature_table),
+                                   "cages": cages,
+                                   "cages_ids": cages_ids,
+                                   "error": "Está a inserir um mês repetido! Atualizar ou apagar o registo atual."})
+
         next_month_fishes = form.cleaned_data['num_fishes']
         next_month_medium_weight = form.cleaned_data['medium_weight']
 
@@ -86,8 +104,9 @@ def individual_cage(request, cage_id):
         monthstat.num_fishes -= total_fish_out
         monthstat.save()
 
-    cages = Cage.objects.all()
-    cages_ids = [cage.cage_id for cage in cages]
+    new_monthstat_pk = None
+    if obj:
+        new_monthstat_pk = obj.pk
 
     return render(request, "individual_cage.html",
                   context={"cage": cage,
@@ -97,7 +116,7 @@ def individual_cage(request, cage_id):
                            "temperature_tables": json.dumps(values_tables),
                            "month_temperature_table": json.dumps(month_temperature_table),
                            "cages": cages,
-                           "cages_ids": cages_ids})
+                           "cages_ids": cages_ids, "new_monthstat_pk": new_monthstat_pk})
 
 
 def update_previous_month_data(month, year, new_month_num_fishes, new_month_medium_weight):
@@ -114,12 +133,13 @@ def update_previous_month_data(month, year, new_month_num_fishes, new_month_medi
         return
 
     previous_monthstat[
-        0].biomass_increase_with_mortality = new_month_medium_weight * new_month_num_fishes - getattr(
-        previous_monthstat[0], "medium_weight") * getattr(previous_monthstat[0], "num_fishes")
+        0].biomass_increase_with_mortality = round(new_month_medium_weight * new_month_num_fishes - getattr(
+        previous_monthstat[0], "medium_weight") * getattr(previous_monthstat[0], "num_fishes"), 4)
 
-    previous_monthstat[0].real_fc_with_mortality = getattr(previous_monthstat[0], "real_30_days_feeding") / getattr(
-        previous_monthstat[0], "biomass_increase_with_mortality") if getattr(previous_monthstat[0],
-                                                                             "biomass_increase_with_mortality") else 0
+    previous_monthstat[0].real_fc_with_mortality = round(
+        getattr(previous_monthstat[0], "real_30_days_feeding") / getattr(
+            previous_monthstat[0], "biomass_increase_with_mortality"), 4) if getattr(previous_monthstat[0],
+                                                                                     "biomass_increase_with_mortality") else 0
 
     previous_monthstat[0].save()
 
@@ -172,17 +192,6 @@ def statistics(request):
 
     fish_weight_distribution = {}
 
-    distribution = {"0-10": 0,
-                    "10-50": 0,
-                    "50-100": 0,
-                    "100-200": 0,
-                    "200-350": 0,
-                    "350-500": 0,
-                    "500-600": 0,
-                    "600-700": 0,
-                    "700-1": 0,
-                    "1-1,5": 0}
-
     for cage in cages:
         for month in cage.monthstat_set.all():
             y = month.year
@@ -216,29 +225,47 @@ def statistics(request):
                 fish_weight_distribution[y][m]["mw"] = m_mw
 
             elif y in fish_weight_distribution:
-                fish_weight_distribution[y][m] = distribution
+                fish_weight_distribution[y][m] = {"0-10": 0,
+                                                  "10-50": 0,
+                                                  "50-100": 0,
+                                                  "100-200": 0,
+                                                  "200-350": 0,
+                                                  "350-500": 0,
+                                                  "500-600": 0,
+                                                  "600-700": 0,
+                                                  "700-1": 0,
+                                                  "1-1,5": 0}
                 fish_weight_distribution[y][m][mw_range] = month.num_fishes
                 fish_weight_distribution[y][m]["mw"] = m_mw
 
             else:
                 fish_weight_distribution[y] = {}
-                fish_weight_distribution[y][m] = distribution
+                fish_weight_distribution[y][m] = {"0-10": 0,
+                                                  "10-50": 0,
+                                                  "50-100": 0,
+                                                  "100-200": 0,
+                                                  "200-350": 0,
+                                                  "350-500": 0,
+                                                  "500-600": 0,
+                                                  "600-700": 0,
+                                                  "700-1": 0,
+                                                  "1-1,5": 0}
                 fish_weight_distribution[y][m][mw_range] = month.num_fishes
                 fish_weight_distribution[y][m]["mw"] = m_mw
 
     form = WeightRange(request.POST or None, request.FILES or None)
 
-    predicitons = {}
+    predictions = {}
 
     if form.is_valid():
         mw_range = form.cleaned_data["classe_tamanho"]
 
         for year, data in fish_weight_distribution.items():
-            predicitons[year] = {}
+            predictions[year] = {}
             for month, mdata in data.items():
-                predicitons[year][month] = {"biomassa": mdata[mw_range] * mdata["mw"], "num_peixes": mdata[mw_range]}
+                predictions[year][month] = {"biomassa": mdata[mw_range] * mdata["mw"], "num_peixes": mdata[mw_range]}
 
-
-    print(predicitons)
+    print(predictions)
     return render(request, "statistics.html",
-                  context={"total_kgs": total_kgs, "fish_weight_distribution": fish_weight_distribution, "form": form})
+                  context={"total_kgs": total_kgs, "fish_weight_distribution": fish_weight_distribution, "form": form,
+                           "predictions": predictions})
