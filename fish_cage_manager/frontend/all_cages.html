@@ -8,10 +8,22 @@
 {# Display django.contrib.messages as Bootstrap alerts #}
 {% bootstrap_messages %}
 
+<style>
+    .btn-xl {
+        padding: 10px 20px;
+        font-size: 20px;
+    }
+
+    .btn {
+        padding: 10px !important;
+    }
+
+</style>
 {# Display a form #}
-<div class="jumbotron">
+<div class="jumbotron mb-0 bg-light">
     <h1 class="display-4">Todas as Jaulas</h1>
-    <a class="btn btn-primary btn-lg" href="{% url 'new_cage' %}" role="button">+ nova jaula</a>
+    <a class="btn btn-primary btn-xl" href="{% url 'new_cage' %}" role="button">+ NOVA JAULA</a>
+    <a class="btn btn-success btn-xl" href="{% url 'stats' %}" role="button">ESTATÍSTICAS</a>
 
 </div>
 

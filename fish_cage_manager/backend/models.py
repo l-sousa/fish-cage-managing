@@ -6,6 +6,9 @@ cage_counter = 0
 class Cage(models.Model):
     cage_id = models.IntegerField(primary_key=True, default=1)
 
+    def __str__(self):
+        return "Jaula nº " + str(self.cage_id)
+
 
 class MonthStat(models.Model):
     cage = models.ForeignKey(Cage, on_delete=models.CASCADE)
@@ -43,17 +46,9 @@ class MonthStat(models.Model):
     mortality_real_percentage = models.FloatField()
     mortality_real_number = models.FloatField()
 
-
-    #calibration
-    calibration_goes_to = models.IntegerField()
-    calibration_came_from = models.IntegerField()
+    # calibration
+    calibration_goes_to = models.CharField(max_length=1000, blank=True, default="{}")
+    calibration_came_from = models.CharField(max_length=1000, blank=True, default="{}")
 
     biomass_increase_with_mortality = models.IntegerField(default=0)
     real_fc_with_mortality = models.FloatField(default=0)
-
-
-
-
-
-
-

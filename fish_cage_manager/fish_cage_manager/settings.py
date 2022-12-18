@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'bootstrap4',
     'backend',
-    'fish_cage_manager'
+    'fish_cage_manager',
+
 ]
 
 MIDDLEWARE = [

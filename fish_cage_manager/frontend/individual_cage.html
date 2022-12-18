@@ -7,22 +7,94 @@
 
 {# Display django.contrib.messages as Bootstrap alerts #}
 {% bootstrap_messages %}
+{% load filters %}
+
+<style>
+    input {
+        width: 7em;
+        border: none;
+        background-color: lightskyblue;
+        border-radius: 5px;
+        height: 3em;
+        padding: 1em;
+    }
+
+    /* Chrome, Safari, Edge, Opera */
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    /* Firefox */
+    input[type=number] {
+        -moz-appearance: textfield;
+    }
+
+    #id_month_name {
+        width: auto;
+    }
+
+    .btn-xl {
+        padding: 10px 20px;
+        font-size: 20px;
+    }
+
+    .btn {
+        padding: 10px !important;
+    }
+
+
+    td, th {
+        text-align: center;
+        vertical-align: middle !important;
+
+    }
+
+    .modal-body {
+
+    }
+</style>
+<body>
 
 {# Display a form #}
-<div class="jumbotron">
+<div class="jumbotron mb-0 bg-light">
     <h1 class="display-4">Jaula nº {{ cage.cage_id }}</h1>
+    <a class="btn btn-success btn-xl" href="{% url 'all_cages' %}">VOLTAR ATRÁS</a>
 </div>
 
-<div class="container">
-    <div class="row">
+<div class="table-responsive">
 
-    </div>
-</div>
-<div class="p-5">
 
-    <table class="table table-hover" style="max-width: 100em;">
+    <table class="table table-hover table-striped">
+        <thead style="border: none">
+        <tr>
+            <th scope="col"></th>
+            <th scope="col"></th>
+            <th scope="col"></th>
+            <th scope="col"></th>
+            <th scope="col"></th>
+            <th scope="col"></th>
+            <th scope="col"></th>
+            <th scope="col"></th>
+            <th scope="col"></th>
+            <th scope="col" colspan="3" style="background: lightcoral">RAÇÃO</th>
+
+            <th scope="col"></th>
+            <th scope="col" colspan="3" style="background: lightseagreen">ESPERADO 30 DIAS</th>
+            <th scope="col"></th>
+            <th scope="col" colspan="4" style="background: lightgoldenrodyellow">REAL</th>
+            <th scope="col" colspan="2" style="background: lightpink">MORTALIDADE TEÓRICA</th>
+            <th scope="col" colspan="2" style="background: lightsalmon">MORTALIDADE REAL</th>
+            <th scope="col" colspan="2" style="background: lightblue">CALIBRAGEM</th>
+            <th scope="col" colspan="2" style="background: lightgray">COM MORTALIDADE</th>
+            <th scope="col"></th>
+        </tr>
+        </thead>
         <thead>
         <tr>
+            <th scope="col">Editar Registo</th>
+            <th scope="col">Apagar Registo</th>
             <th scope="col">Ano</th>
             <th scope="col">Mês</th>
             <th scope="col">Temp.</th>
@@ -50,12 +122,16 @@
             <th scope="col">De</th>
             <th scope="col">Aum. Biom.</th>
             <th scope="col">FC Real</th>
+            <th scope="col">Inserir Registo</th>
         </tr>
         </thead>
         <tbody>
 
         <tr>
             <form method="post">
+                <td>
+                </td>
+                <td></td>
                 {% csrf_token %}
                 {{ form.non_field_errors }}
 
@@ -80,13 +156,22 @@
                 </td>
 
                 <td>
-                    <input class="btn btn-primary" type="submit" value="INSERIR">
+                    <input class="btn btn-primary mr-3" type="submit" value="INSERIR">
                 </td>
             </form>
         </tr>
 
         {% for month in monthstats %}
+
             <tr>
+                <td>
+                    <a class="btn btn-warning"
+                       href="{% url 'update_monthstat' monthstat_id=month.pk cage_id=cage.cage_id %}">EDITAR</a>
+                </td>
+                <td>
+                    <a class="btn btn-danger"
+                       href="{% url 'delete_monthstat' monthstat_id=month.pk cage_id=cage.cage_id %}">APAGAR</a>
+                </td>
                 <td scope="row">{{ month.year }}</td>
                 <th>{{ month.month_name }}</th>
                 <th>{{ month.temperature }}</th>
@@ -104,7 +189,7 @@
                 <td>{{ month.theoric_medium_weight_with_real_feeding }}</td>
                 <td>{{ month.real_30_days_feeding }}</td>
                 <td>{{ month.real_30_days_medium_weight_with_real_feeding }}</td>
-                <td>{{ month.real_30_days_medium_weight }}</td>
+                <td>{{ month.real_30_days_real_medium_weight }}</td>
                 <td>{{ month.real_30_days_biomass }}</td>
                 <td>{{ month.mortality_theoric_percentage }}</td>
                 <td>{{ month.mortality_theoric_number }}</td>
@@ -114,24 +199,180 @@
                 <td>{{ month.calibration_came_from }}</td>
                 <td>{{ month.biomass_increase_with_mortality }}</td>
                 <td>{{ month.real_fc_with_mortality }}</td>
-                <td>
-                    <a class="btn btn-warning"
-                       href="{% url 'update_monthstat' monthstat_id=month.pk cage_id=cage.cage_id %}">EDITAR</a>
-                </td>
-                <td>
-                    <a class="btn btn-danger"
-                       href="{% url 'delete_monthstat' monthstat_id=month.pk cage_id=cage.cage_id %}">APAGAR</a>
-                </td>
+                <td></td>
             </tr>
         {% endfor %}
 
         </tbody>
     </table>
-
 </div>
+
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#paraModal" hidden id="paraModalButton">
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="paraModal" tabindex="-1" role="dialog" aria-labelledby="paraModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="paraModalLabel">Peixes que vão sair da jaula</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" >
+                {% for i in cages %}
+                    {% if i.cage_id == cage.cage_id %}
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="flexRadioDisabled"
+                                   id="flexRadioDisabled" disabled>
+                            <label class="form-check-label" for="flexRadioDisabled">
+                                {{ i }}
+                            </label>
+                        </div>
+                    {% else %}
+                        {% if i.monthstat_set.all %}
+                            <input class="form-check-input" type="checkbox" value=""
+                                   id="cage_id_{{ i.cage_id }}_checkbox">
+                            <label class="form-check-label" for="flexCheckDefault">{{ i }}</label>
+
+                            <label class="form-check-label" for="num_fishes_out">Número de peixes para sair:</label>
+                            <input type="number" name="num_fishes_out" step="any" required=""
+                                   id="cage_id_{{ i.cage_id }}_num_fishes_out"
+                                   placeholder="{{ i.monthstat_set.all | return_latest_num_fishes }}">
+
+                            <input type="number" name="latest_monthstat_id" step="any" required=""
+                                   id="cage_id_{{ i.cage_id }}_latest_monthstat_id"
+                                   value="{{ i.monthstat_set.all | return_latest_monthstat_id }}" hidden>
+
+                        {% endif %}
+
+                    {% endif %}
+
+                {% endfor %}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" id="para_modal_close_button"
+                        hidden>FECHAR
+                </button>
+                <button type="button" class="btn btn-primary" id="para_modal_save_button">GUARDAR</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#deModal" hidden id="deModalButton">
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="deModal" tabindex="-1" role="dialog" aria-labelledby="deModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deModalLabel">Peixes que vão entrar na jaula</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                {% for i in cages %}
+                    {% if i.cage_id == cage.cage_id %}
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="flexRadioDisabled"
+                                   id="flexRadioDisabled" disabled>
+                            <label class="form-check-label" for="flexRadioDisabled">
+                                {{ i }}
+                            </label>
+                        </div>
+                    {% else %}
+                        {% if i.monthstat_set.all %}
+                            <input class="form-check-input" type="checkbox" value=""
+                                   id="cage_id_{{ i.cage_id }}_checkbox_in">
+                            <label class="form-check-label" for="flexCheckDefault">{{ i }}</label>
+
+                            <label class="form-check-label" for="num_fishes_in">Número de peixes para entrar:</label>
+
+                            <input type="number" name="num_fishes_in" step="any" required=""
+                                   id="cage_id_{{ i.cage_id }}_num_fishes_in"
+                                   placeholder="{{ i.monthstat_set.all | return_latest_num_fishes }}">
+
+                            <input type="number" name="latest_monthstat_id_in" step="any" required=""
+                                   id="cage_id_{{ i.cage_id }}_latest_monthstat_id_in"
+                                   value="{{ i.monthstat_set.all | return_latest_monthstat_id }}" hidden>
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" id="de_modal_close_button"
+                        hidden>FECHAR
+                </button>
+                <button type="button" class="btn btn-primary" id="de_modal_save_button">GUARDAR</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
 
 <script>
 
+    // PARA - PEIXES A SAIR
+    $("#id_calibration_goes_to").click(function () {
+        para_values = {};
+        $("#paraModalButton").click();
+    });
+
+
+    let para_values = {};
+
+    $("#para_modal_save_button").click(function () {
+        para_values = {};
+
+
+        for (let i = 0; i < {{cages_ids | length}}; i++) {
+            if ($("#cage_id_" + {{cages_ids}}[i] +"_checkbox").is(":checked")) {
+                para_values[i] = [$("#cage_id_" + {{cages_ids}}[i] +"_num_fishes_out").val(), $("#cage_id_" + {{cages_ids}}[i] +"_latest_monthstat_id").val()]
+            }
+        }
+        alert(JSON.stringify(para_values));
+    });
+
+
+    $("#para_modal_save_button").click(function () {
+        $("#id_calibration_goes_to").attr("value", JSON.stringify(para_values));
+        $("#para_modal_close_button").click();
+    });
+
+    // DE - PEIXES A ENTRAR
+
+    $("#id_calibration_came_from").click(function () {
+        de_values = {};
+        $("#deModalButton").click();
+    });
+
+
+    let de_values = {};
+
+    $("#de_modal_save_button").click(function () {
+        de_values = {};
+        for (let i = 0; i < {{cages_ids | length}}; i++) {
+            if ($("#cage_id_" + {{cages_ids}}[i] + "_checkbox_in").is(":checked")) {
+                de_values[i] = [$("#cage_id_" + {{cages_ids}}[i] + "_num_fishes_in").val(), $("#cage_id_" + {{cages_ids}}[i] + "_latest_monthstat_id_in").val()]
+            }
+        }
+    });
+
+
+    $("#de_modal_save_button").click(function () {
+        $("#id_calibration_came_from").attr("value", JSON.stringify(de_values));
+        $("#de_modal_close_button").click();
+    });
+
+
+    // TABELAS
     var temperature_tables = {{ temperature_tables | safe}};
     var month_temperature_table = {{ month_temperature_table | safe}};
 
@@ -221,25 +462,25 @@
 
     $('#id_food_portion_total_30_days').change(function () {
         if ($('#id_fc').val() && $('#id_biomass').val() && $('#id_num_fishes').val()) {
-            $('#id_theoric_medium_weight_with_real_feeding').val(((Number($('#id_food_portion_total_30_days').val() / Number($('#id_fc').val())) + Number($('#id_biomass').val())) / Number($('#id_num_fishes').val())));
+            $('#id_theoric_medium_weight_with_real_feeding').val((((Number($('#id_food_portion_total_30_days').val() / Number($('#id_fc').val())) + Number($('#id_biomass').val())) / Number($('#id_num_fishes').val()))).toFixed(3));
             $("#id_theoric_medium_weight_with_real_feeding").trigger("change");
         }
     });
     $('#id_fc').change(function () {
         if ($('#id_food_portion_total_30_days').val() && $('#id_biomass').val() && $('#id_num_fishes').val()) {
-            $('#id_theoric_medium_weight_with_real_feeding').val(((Number($('#id_food_portion_total_30_days').val() / Number($('#id_fc').val())) + Number($('#id_biomass').val())) / Number($('#id_num_fishes').val())));
+            $('#id_theoric_medium_weight_with_real_feeding').val((((Number($('#id_food_portion_total_30_days').val() / Number($('#id_fc').val())) + Number($('#id_biomass').val())) / Number($('#id_num_fishes').val()))).toFixed(3));
             $("#id_theoric_medium_weight_with_real_feeding").trigger("change");
         }
     });
     $('#id_biomass').change(function () {
         if ($('#id_fc').val() && $('#id_food_portion_total_30_days').val() && $('#id_num_fishes').val()) {
-            $('#id_theoric_medium_weight_with_real_feeding').val(((Number($('#id_food_portion_total_30_days').val() / Number($('#id_fc').val())) + Number($('#id_biomass').val())) / Number($('#id_num_fishes').val())));
+            $('#id_theoric_medium_weight_with_real_feeding').val((((Number($('#id_food_portion_total_30_days').val() / Number($('#id_fc').val())) + Number($('#id_biomass').val())) / Number($('#id_num_fishes').val()))).toFixed(3));
             $("#id_theoric_medium_weight_with_real_feeding").trigger("change");
         }
     });
     $('#id_num_fishes').change(function () {
         if ($('#id_fc').val() && $('#id_biomass').val() && $('#id_food_portion_total_30_days').val()) {
-            $('#id_theoric_medium_weight_with_real_feeding').val(((Number($('#id_food_portion_total_30_days').val() / Number($('#id_fc').val())) + Number($('#id_biomass').val())) / Number($('#id_num_fishes').val())));
+            $('#id_theoric_medium_weight_with_real_feeding').val((((Number($('#id_food_portion_total_30_days').val() / Number($('#id_fc').val())) + Number($('#id_biomass').val())) / Number($('#id_num_fishes').val()))).toFixed(3));
             $("#id_theoric_medium_weight_with_real_feeding").trigger("change");
         }
     });
@@ -249,14 +490,14 @@
     ///////////// CALCULO DE KG RAÇÃO
     $('#id_biomass').change(function () {
         if ($('#id_percent_feeding').val()) {
-            $('#id_food_portion_kg').val((Number($('#id_percent_feeding').val()) * Number($('#id_biomass').val())) / 100);
+            $('#id_food_portion_kg').val(((Number($('#id_percent_feeding').val()) * Number($('#id_biomass').val())) / 100).toFixed(3));
             $("#id_food_portion_kg").trigger("change");
         }
     });
 
     $('#id_percent_feeding').change(function () {
         if ($('#id_biomass').val()) {
-            $('#id_food_portion_kg').val((Number($('#id_percent_feeding').val()) * Number($('#id_biomass').val())) / 100);
+            $('#id_food_portion_kg').val(((Number($('#id_percent_feeding').val()) * Number($('#id_biomass').val())) / 100).toFixed(3));
             $("#id_food_portion_kg").trigger("change");
         }
     });
@@ -265,7 +506,7 @@
     ///////////// CALCULO DE SACOS RAÇÃO
 
     $('#id_food_portion_kg').change(function () {
-        $('#id_food_portion_bags').val(Number($('#id_food_portion_kg').val()) / 25);
+        $('#id_food_portion_bags').val((Number($('#id_food_portion_kg').val()) / 25).toFixed(3));
         $("#id_food_portion_bags").trigger("change");
     });
 
@@ -273,7 +514,7 @@
 
     ///////////// CALCULO DE TOTAL 30 DIAS
     $('#id_food_portion_kg').change(function () {
-        $('#id_food_portion_total_30_days').val(Number($('#id_food_portion_kg').val()) * 30);
+        $('#id_food_portion_total_30_days').val((Number($('#id_food_portion_kg').val()) * 30).toFixed(3));
         $("#id_food_portion_total_30_days").trigger("change");
     });
 
@@ -283,7 +524,7 @@
     $('#id_food_portion_total_30_days').change(function () {
         if ($('#id_fc').val()) {
 
-            $('#id_theoric_30_days_biomass_increase').val(Number($('#id_food_portion_total_30_days').val()) * Number($('#id_fc').val()));
+            $('#id_theoric_30_days_biomass_increase').val((Number($('#id_food_portion_total_30_days').val()) * Number($('#id_fc').val())).toFixed(3));
             $("#id_theoric_30_days_biomass_increase").trigger("change");
         }
     });
@@ -291,7 +532,7 @@
     $('#id_fc').change(function () {
         if ($('#id_food_portion_total_30_days').val()) {
 
-            $('#id_theoric_30_days_biomass_increase').val(Number($('#id_food_portion_total_30_days').val()) * Number($('#id_fc').val()));
+            $('#id_theoric_30_days_biomass_increase').val((Number($('#id_food_portion_total_30_days').val()) * Number($('#id_fc').val())).toFixed(3));
             $("#id_theoric_30_days_biomass_increase").trigger("change");
         }
     });
@@ -301,14 +542,14 @@
     ///////////// CALCULO DE Biom. Tot.
     $('#id_biomass').change(function () {
         if ($('#id_theoric_30_days_biomass_increase').val()) {
-            $('#id_theoric_30_days_biomass_total').val(Number($('#id_biomass').val()) + Number($('#id_theoric_30_days_biomass_increase').val()));
+            $('#id_theoric_30_days_biomass_total').val((Number($('#id_biomass').val()) + Number($('#id_theoric_30_days_biomass_increase').val())).toFixed(3));
             $("#id_theoric_30_days_biomass_total").trigger("change");
         }
     });
 
     $('#id_theoric_30_days_biomass_increase').change(function () {
         if ($('#id_biomass').val()) {
-            $('#id_theoric_30_days_biomass_total').val(Number($('#id_biomass').val()) + Number($('#id_theoric_30_days_biomass_increase').val()));
+            $('#id_theoric_30_days_biomass_total').val((Number($('#id_biomass').val()) + Number($('#id_theoric_30_days_biomass_increase').val())).toFixed(3));
             $("#id_theoric_30_days_biomass_total").trigger("change");
         }
     });
@@ -318,14 +559,14 @@
     ///////////// CALCULO DE PM
     $('#id_theoric_30_days_biomass_total').change(function () {
         if ($('#id_num_fishes').val()) {
-            $('#id_theoric_30_days_medium_weight').val(Number($('#id_theoric_30_days_biomass_total').val()) / Number($('#id_num_fishes').val()));
+            $('#id_theoric_30_days_medium_weight').val((Number($('#id_theoric_30_days_biomass_total').val()) / Number($('#id_num_fishes').val())).toFixed(3));
             $("#id_theoric_30_days_medium_weight").trigger("change");
         }
     });
 
     $('#id_num_fishes').change(function () {
         if ($('#id_theoric_30_days_biomass_total').val()) {
-            $('#id_theoric_30_days_medium_weight').val(Number($('#id_theoric_30_days_biomass_total').val()) / Number($('#id_num_fishes').val()));
+            $('#id_theoric_30_days_medium_weight').val((Number($('#id_theoric_30_days_biomass_total').val()) / Number($('#id_num_fishes').val())).toFixed(3));
             $("#id_theoric_30_days_medium_weight").trigger("change");
         }
     });
@@ -335,25 +576,25 @@
     ///////////// CALCULO DE PM REAL
     $('#id_real_30_days_feeding').change(function () {
         if ($('#id_fc').val() && $('#id_biomass').val() && $('#id_num_fishes').val()) {
-            $('#id_real_30_days_medium_weight_with_real_feeding').val(((Number($('#id_real_30_days_feeding').val() / Number($('#id_fc').val())) + Number($('#id_biomass').val())) / Number($('#id_num_fishes').val())));
+            $('#id_real_30_days_medium_weight_with_real_feeding').val((((Number($('#id_real_30_days_feeding').val() / Number($('#id_fc').val())) + Number($('#id_biomass').val())) / Number($('#id_num_fishes').val()))).toFixed(3));
             $("#id_real_30_days_medium_weight_with_real_feeding").trigger("change");
         }
     });
     $('#id_fc').change(function () {
         if ($('#id_real_30_days_feeding').val() && $('#id_biomass').val() && $('#id_num_fishes').val()) {
-            $('#id_real_30_days_medium_weight_with_real_feeding').val(((Number($('#id_real_30_days_feeding').val() / Number($('#id_fc').val())) + Number($('#id_biomass').val())) / Number($('#id_num_fishes').val())));
+            $('#id_real_30_days_medium_weight_with_real_feeding').val((((Number($('#id_real_30_days_feeding').val() / Number($('#id_fc').val())) + Number($('#id_biomass').val())) / Number($('#id_num_fishes').val()))).toFixed(3));
             $("#id_real_30_days_medium_weight_with_real_feeding").trigger("change");
         }
     });
     $('#id_biomass').change(function () {
         if ($('#id_fc').val() && $('#id_real_30_days_feeding').val() && $('#id_num_fishes').val()) {
-            $('#id_real_30_days_medium_weight_with_real_feeding').val(((Number($('#id_real_30_days_feeding').val() / Number($('#id_fc').val())) + Number($('#id_biomass').val())) / Number($('#id_num_fishes').val())));
+            $('#id_real_30_days_medium_weight_with_real_feeding').val((((Number($('#id_real_30_days_feeding').val() / Number($('#id_fc').val())) + Number($('#id_biomass').val())) / Number($('#id_num_fishes').val()))).toFixed(3));
             $("#id_real_30_days_medium_weight_with_real_feeding").trigger("change");
         }
     });
     $('#id_num_fishes').change(function () {
         if ($('#id_fc').val() && $('#id_biomass').val() && $('#id_real_30_days_feeding').val()) {
-            $('#id_real_30_days_medium_weight_with_real_feeding').val(((Number($('#id_real_30_days_feeding').val() / Number($('#id_fc').val())) + Number($('#id_biomass').val())) / Number($('#id_num_fishes').val())));
+            $('#id_real_30_days_medium_weight_with_real_feeding').val((((Number($('#id_real_30_days_feeding').val() / Number($('#id_fc').val())) + Number($('#id_biomass').val())) / Number($('#id_num_fishes').val()))).toFixed(3));
             $("#id_real_30_days_medium_weight_with_real_feeding").trigger("change");
         }
     });
@@ -365,14 +606,14 @@
 
     $('#id_real_30_days_real_medium_weight').change(function () {
         if ($('#id_num_fishes').val() && $('#id_mortality_theoric_number').val()) {
-            $('#id_real_30_days_biomass').val(Number($('#id_real_30_days_real_medium_weight').val()) * (Number($('#id_num_fishes').val()) - Number($('#id_mortality_theoric_number').val())));
+            $('#id_real_30_days_biomass').val((Number($('#id_real_30_days_real_medium_weight').val()) * (Number($('#id_num_fishes').val()) - Number($('#id_mortality_theoric_number').val()))).toFixed(3));
             $("#id_real_30_days_biomass").trigger("change");
         }
     });
 
     $('#id_num_fishes').change(function () {
         if ($('#id_real_30_days_real_medium_weight').val() && $('#id_mortality_theoric_number').val()) {
-            $('#id_real_30_days_biomass').val(Number($('#id_real_30_days_real_medium_weight').val()) * (Number($('#id_num_fishes').val()) - Number($('#id_mortality_theoric_number').val())));
+            $('#id_real_30_days_biomass').val((Number($('#id_real_30_days_real_medium_weight').val()) * (Number($('#id_num_fishes').val()) - Number($('#id_mortality_theoric_number').val()))).toFixed(3));
             $("#id_real_30_days_biomass").trigger("change");
         }
 
@@ -380,7 +621,7 @@
 
     $('#id_mortality_theoric_number').change(function () {
         if ($('#id_num_fishes').val() && $('#id_real_30_days_real_medium_weight').val()) {
-            $('#id_real_30_days_biomass').val(Number($('#id_real_30_days_real_medium_weight').val()) * (Number($('#id_num_fishes').val()) - Number($('#id_mortality_theoric_number').val())));
+            $('#id_real_30_days_biomass').val((Number($('#id_real_30_days_real_medium_weight').val()) * (Number($('#id_num_fishes').val()) - Number($('#id_mortality_theoric_number').val()))).toFixed(3));
             $("#id_real_30_days_biomass").trigger("change");
         }
     });
@@ -392,14 +633,14 @@
 
     $('#id_mortality_theoric_percentage').change(function () {
         if ($('#id_num_fishes').val()) {
-            $('#id_mortality_theoric_number').val(Number($('#id_num_fishes').val() * Number($('#id_mortality_theoric_percentage').val())));
+            $('#id_mortality_theoric_number').val((Number($('#id_num_fishes').val() * Number($('#id_mortality_theoric_percentage').val()))).toFixed(3));
             $("#id_mortality_theoric_number").trigger("change");
         }
     });
 
     $('#id_num_fishes').change(function () {
         if ($('#id_mortality_theoric_percentage').val()) {
-            $('#id_mortality_theoric_number').val(Number($('#id_num_fishes').val() * Number($('#id_mortality_theoric_percentage').val())));
+            $('#id_mortality_theoric_number').val((Number($('#id_num_fishes').val() * Number($('#id_mortality_theoric_percentage').val()))).toFixed(3));
             $("#id_mortality_theoric_number").trigger("change");
         }
     });
@@ -411,17 +652,15 @@
 
     $('#id_num_fishes').change(function () {
         if ($('#id_mortality_real_number').val()) {
-            $('#id_mortality_real_percentage').val(Number($('#id_mortality_real_number').val() / Number($('#id_num_fishes').val()) * 100));
+            $('#id_mortality_real_percentage').val((Number($('#id_mortality_real_number').val() / Number($('#id_num_fishes').val()) * 100)).toFixed(3));
             $("#id_mortality_real_percentage").trigger("change");
         }
     });
 
     $('#id_mortality_real_number').change(function () {
         if ($('#id_num_fishes').val()) {
-            $('#id_mortality_real_percentage').val(Number($('#id_mortality_real_number').val() / Number($('#id_num_fishes').val()) * 100));
+            $('#id_mortality_real_percentage').val((Number($('#id_mortality_real_number').val() / Number($('#id_num_fishes').val()) * 100)).toFixed(3));
             $("#id_mortality_real_percentage").trigger("change");
         }
     });
-
-
 </script>

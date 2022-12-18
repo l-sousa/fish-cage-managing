@@ -7,19 +7,150 @@
 
 {# Display django.contrib.messages as Bootstrap alerts #}
 {% bootstrap_messages %}
+<style>
 
+    input {
+        width: 7em;
+        border: none;
+        background-color: lightskyblue;
+        border-radius: 5px;
+        height: 3em;
+        padding: 1em;
+    }
+
+    /* Chrome, Safari, Edge, Opera */
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    /* Firefox */
+    input[type=number] {
+        -moz-appearance: textfield;
+    }
+
+    #id_month_name {
+        width: auto;
+    }
+
+    .btn-xl {
+        padding: 10px 20px;
+        font-size: 20px;
+    }
+
+    .btn {
+        padding: 10px !important;
+    }
+
+
+    td, th {
+        text-align: center;
+        vertical-align: middle !important;
+
+    }
+
+</style>
 {# Display a form #}
-<div class="jumbotron">
-    <h1 class="display-4">Update</h1>
-    <a class="btn btn-primary btn-lg" href="{% url 'new_cage' %}" role="button">+ nova jaula</a>
-
+<div class="jumbotron mb-0 bg-light">
+    <h1 class="display-4">Atualizar {{ monthstat.month_name }} de {{ monthstat.year }}</h1>
+    <a class="btn btn-success btn-xl" href="{% url 'individual_cage' cage_id %}">VOLTAR ATRÁS</a>
 </div>
 
-<h1>Update Monthstat</h1>
+<div class="table-responsive">
 
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" value="Submit">
- </form>
-...
+
+    <table class="table table-hover table-striped">
+        <thead style="border: none">
+        <tr>
+
+            <th scope="col"></th>
+            <th scope="col"></th>
+            <th scope="col"></th>
+            <th scope="col"></th>
+            <th scope="col"></th>
+            <th scope="col"></th>
+            <th scope="col"></th>
+            <th scope="col" colspan="3" style="background: lightcoral">RAÇÃO</th>
+
+            <th scope="col"></th>
+            <th scope="col" colspan="3" style="background: lightseagreen">ESPERADO 30 DIAS</th>
+            <th scope="col"></th>
+            <th scope="col" colspan="4" style="background: lightgoldenrodyellow">REAL</th>
+            <th scope="col" colspan="2" style="background: lightpink">MORTALIDADE TEÓRICA</th>
+            <th scope="col" colspan="2" style="background: lightsalmon">MORTALIDADE REAL</th>
+            <th scope="col" colspan="2" style="background: lightblue">CALIBRAGEM</th>
+            <th scope="col" colspan="2" style="background: lightgray">COM MORTALIDADE</th>
+            <th scope="col"></th>
+        </tr>
+        </thead>
+        <thead>
+        <tr>
+
+            <th scope="col">Ano</th>
+            <th scope="col">Mês</th>
+            <th scope="col">Temp.</th>
+            <th scope="col">Nº Peixes</th>
+            <th scope="col">PM</th>
+            <th scope="col">Biom.</th>
+            <th scope="col">% Alim</th>
+            <th scope="col">Kg</th>
+            <th scope="col">Sacos</th>
+            <th scope="col">Tot. 30 Dias</th>
+            <th scope="col">FC</th>
+            <th scope="col">Aum. Biom.</th>
+            <th scope="col">Biom. Total</th>
+            <th scope="col">PM</th>
+            <th scope="col">PM Teórico C/ Alim. Real</th>
+            <th scope="col">Alim. Real</th>
+            <th scope="col">PM Teórico C/ Alim. Real</th>
+            <th scope="col">PM Real</th>
+            <th scope="col">Biom. Real</th>
+            <th scope="col">%</th>
+            <th scope="col">Nº</th>
+            <th scope="col">%</th>
+            <th scope="col">Nº</th>
+            <th scope="col">Para</th>
+            <th scope="col">De</th>
+            <th scope="col">Aum. Biom.</th>
+            <th scope="col">FC Real</th>
+            <th scope="col">Atualizar Registo</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        <tr>
+            <form method="post">
+                {% csrf_token %}
+                {{ form.non_field_errors }}
+
+                {% for hidden_field in form.hidden_fields %}
+                    {{ hidden_field.errors }}
+                    {{ hidden_field }}
+                {% endfor %}
+
+                {% for field in form.visible_fields %}
+                    <td>
+                        {{ field.errors }}
+                        {{ field }}
+                        {{ field.help_text }}
+                    </td>
+                {% endfor %}
+
+                <td>
+                    <hr>
+                </td>
+                <td>
+                    <hr>
+                </td>
+
+                <td>
+                    <input class="btn btn-primary mr-3" type="submit" value="ATUALIZAR">
+                </td>
+            </form>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+
