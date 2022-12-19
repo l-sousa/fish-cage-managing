@@ -290,28 +290,31 @@
             <div class="modal-body">
                 {% for i in cages %}
                     {% if i.cage_id == cage.cage_id %}
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="flexRadioDisabled"
-                                   id="flexRadioDisabled" disabled>
-                            <label class="form-check-label" for="flexRadioDisabled">
-                                {{ i }}
-                            </label>
-                        </div>
+                        <p>{{ i }}, não pode usar esta opção, é a própria jaula.</p>
+                        <hr>
                     {% else %}
                         {% if i.monthstat_set.all %}
-                            <input class="form-check-input" type="checkbox" value=""
-                                   id="cage_id_{{ i.cage_id }}_checkbox_in">
-                            <label class="form-check-label" for="flexCheckDefault">{{ i }}</label>
 
-                            <label class="form-check-label" for="num_fishes_in">Número de peixes para entrar:</label>
+                            <div class="form-check row">
+                                <div class="col d-flex flex-wrap flex-column justify-content-center align-items-center">
+                                    <input class="form-check-input" type="checkbox" value=""
+                                           id="cage_id_{{ i.cage_id }}_checkbox_in">
+                                    <label class="form-check-label" for="flexCheckDefault">{{ i }}</label>
+                                </div>
+                                <div class="col d-flex flex-wrap flex-column justify-content-center align-items-center">
+                                    <label class="form-check-label" for="num_fishes_in">Número de peixes para
+                                        entrar:</label>
 
-                            <input type="number" name="num_fishes_in" step="any" required=""
-                                   id="cage_id_{{ i.cage_id }}_num_fishes_in"
-                                   placeholder="{{ i.monthstat_set.all | return_latest_num_fishes }}">
+                                    <input type="number" name="num_fishes_in" step="any" required=""
+                                           id="cage_id_{{ i.cage_id }}_num_fishes_in"
+                                           placeholder="{{ i.monthstat_set.all | return_latest_num_fishes }}">
 
-                            <input type="number" name="latest_monthstat_id_in" step="any" required=""
-                                   id="cage_id_{{ i.cage_id }}_latest_monthstat_id_in"
-                                   value="{{ i.monthstat_set.all | return_latest_monthstat_id }}" hidden>
+                                    <input type="number" name="latest_monthstat_id_in" step="any" required=""
+                                           id="cage_id_{{ i.cage_id }}_latest_monthstat_id_in"
+                                           value="{{ i.monthstat_set.all | return_latest_monthstat_id }}" hidden>
+                                </div>
+                            </div>
+                            <hr>
                         {% endif %}
                     {% endif %}
                 {% endfor %}
