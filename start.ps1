@@ -12,6 +12,7 @@ if (-not $python) {
     Remove-Item -Path ".\python-3.9.1-amd64.exe"
 }
 
+cd fish_cage_manager
 # Create a virtual environment with python 3.9
 python3.9 -m venv env
 
